@@ -47,11 +47,7 @@ public class StockController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DataStock> updateProduct(@RequestBody DataUpdateProduct dataUpdateProduct, @PathVariable Long id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()) {
-            throw new StockException("The id doesn't exist. Please, try it with another id.");
-        }
+        Optional<Product> product = getProduct(id);
 
         Product product1 = product.get();
         product1.update(dataUpdateProduct);
@@ -59,5 +55,21 @@ public class StockController {
         return ResponseEntity.ok(new DataStock(product1));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProduct(@PathVariable Long id) {
+        Optional<Product> optionalProduct = getProduct(id);
 
+        Product product = optionalProduct.get();
+        productRepository.delete(product);
+        return ResponseEntity.noContent().build();
+    }
+
+    private Optional<Product> getProduct(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new StockException("The id doesn't exist. Please, try it with another id.");
+        }
+        return product;
+    }
 }

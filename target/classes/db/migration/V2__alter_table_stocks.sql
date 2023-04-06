@@ -1,0 +1,1 @@
+alter table stocks rename to products;

@@ -8,7 +8,7 @@
         <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>stock.management</groupId>
+    <groupId>product.management</groupId>
     <artifactId>api_stock</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>api_stock</name>

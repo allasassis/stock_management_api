@@ -72,6 +72,7 @@ public class StockController {
         return ResponseEntity.noContent().build();
     }
 
+    // Verify if the product exist
     private Optional<Product> getProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
 

@@ -48,13 +48,14 @@ public class Product {
         }
     }
 
-    public void updateQuantity(DataUpdateQuantity dataUpdateQuantity) {
-        if (dataUpdateQuantity != null) {
-            if (this.quantity <= dataUpdateQuantity.quantity()) {
-                this.quantity += dataUpdateQuantity.quantity();
-            } else {
-                throw new StockException("The quantity is bigger than we have in stock!");
+    public void updateQuantity(DataUpdateQuantity quantityDto) {
+
+            int x = quantityDto.quantity() + this.quantity;
+
+            if (quantityDto.quantity() < 0 && x < 0) {
+                throw new StockException("This quantity is bigger than we have in stock!");
             }
-        }
+
+            this.quantity += quantityDto.quantity();
     }
 }

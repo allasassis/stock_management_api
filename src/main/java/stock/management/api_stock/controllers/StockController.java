@@ -8,6 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import stock.management.api_stock.dto.*;
 import stock.management.api_stock.exception.StockException;
 import stock.management.api_stock.models.Product;
+import stock.management.api_stock.models.TransactionType;
 import stock.management.api_stock.repositories.ProductRepository;
 import stock.management.api_stock.validators.ValidatorProductExist;
 
@@ -25,6 +26,9 @@ public class StockController {
     @Autowired
     private ValidatorProductExist validator;
 
+    @Autowired
+    private CreateTransaction createTransaction;
+
     @GetMapping
     public ResponseEntity<List<DataStockList>> listStock() {
         List<DataStockList> list = productRepository.findAll().stream().map(DataStockList::new).toList();
@@ -41,6 +45,10 @@ public class StockController {
 
         Product product = new Product(productDto);
         productRepository.save(product);
+
+        // Creating transaction
+        createTransaction.create(TransactionType.REGISTER_PRODUCT);
+
         URI uri = uriComponentsBuilder.path("/stock/{id}").buildAndExpand(product.getId()).toUri();
         return ResponseEntity.created(uri).body(new DataStock(product));
     }
@@ -49,9 +57,11 @@ public class StockController {
     @Transactional
     public ResponseEntity<DataStock> updateProduct(@RequestBody DataUpdateProduct dataUpdateProduct, @PathVariable Long id) {
         Product product = validator.valid(id);
-
         product.update(dataUpdateProduct);
         productRepository.save(product);
+
+        createTransaction.create(TransactionType.UPDATE_PRODUCT);
+
         return ResponseEntity.ok(new DataStock(product));
     }
 
@@ -59,17 +69,21 @@ public class StockController {
     @Transactional
     public ResponseEntity<DataStock> updateQuantityProduct(@RequestBody DataUpdateQuantity dataUpdateQuantity, @PathVariable Long id) {
         Product product = validator.valid(id);
-
         product.updateQuantity(dataUpdateQuantity);
         productRepository.save(product);
+
+        createTransaction.create(TransactionType.UPDATE_QUANTITY_PRODUCT);
+
         return ResponseEntity.ok(new DataStock(product));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteProduct(@PathVariable Long id) {
         Product product = validator.valid(id);
-
         productRepository.delete(product);
+
+        createTransaction.create(TransactionType.DELETE_PRODUCT);
+
         return ResponseEntity.noContent().build();
     }
 

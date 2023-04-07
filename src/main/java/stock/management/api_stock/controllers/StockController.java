@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import stock.management.api_stock.dto.DataStock;
-import stock.management.api_stock.dto.DataStockList;
-import stock.management.api_stock.dto.DataRegisterProduct;
-import stock.management.api_stock.dto.DataUpdateProduct;
+import stock.management.api_stock.dto.*;
 import stock.management.api_stock.exception.StockException;
 import stock.management.api_stock.models.Product;
 import stock.management.api_stock.repositories.ProductRepository;
@@ -51,6 +48,17 @@ public class StockController {
 
         Product product1 = product.get();
         product1.update(dataUpdateProduct);
+        productRepository.save(product1);
+        return ResponseEntity.ok(new DataStock(product1));
+    }
+
+    @PutMapping("/quantity/{id}")
+    @Transactional
+    public ResponseEntity<DataStock> updateQuantityProduct(@RequestBody DataUpdateQuantity dataUpdateQuantity, @PathVariable Long id) {
+        Optional<Product> product = getProduct(id);
+
+        Product product1 = product.get();
+        product1.updateQuantity(dataUpdateQuantity);
         productRepository.save(product1);
         return ResponseEntity.ok(new DataStock(product1));
     }

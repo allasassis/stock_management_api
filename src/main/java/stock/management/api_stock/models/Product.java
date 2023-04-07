@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import stock.management.api_stock.dto.DataRegisterProduct;
 import stock.management.api_stock.dto.DataUpdateProduct;
+import stock.management.api_stock.dto.DataUpdateQuantity;
+import stock.management.api_stock.exception.StockException;
 
 @Table(name = "products")
 @Entity(name = "Product")
@@ -44,8 +46,15 @@ public class Product {
         if(dataUpdateProduct.provider() != null) {
             this.provider = dataUpdateProduct.provider();
         }
-        if(dataUpdateProduct.quantity() != null) {
-            this.quantity += dataUpdateProduct.quantity();
+    }
+
+    public void updateQuantity(DataUpdateQuantity dataUpdateQuantity) {
+        if (dataUpdateQuantity != null) {
+            if (this.quantity <= dataUpdateQuantity.quantity()) {
+                this.quantity += dataUpdateQuantity.quantity();
+            } else {
+                throw new StockException("The quantity is bigger than we have in stock!");
+            }
         }
     }
 }

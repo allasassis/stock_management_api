@@ -9,6 +9,7 @@ import stock.management.api_stock.dto.*;
 import stock.management.api_stock.exception.StockException;
 import stock.management.api_stock.models.Product;
 import stock.management.api_stock.repositories.ProductRepository;
+import stock.management.api_stock.validators.ValidatorProductExist;
 
 import java.net.URI;
 import java.util.List;
@@ -20,6 +21,9 @@ public class StockController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ValidatorProductExist validator;
 
     @GetMapping
     public ResponseEntity<List<DataStockList>> listStock() {
@@ -44,41 +48,29 @@ public class StockController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DataStock> updateProduct(@RequestBody DataUpdateProduct dataUpdateProduct, @PathVariable Long id) {
-        Optional<Product> product = getProduct(id);
+        Product product = validator.valid(id);
 
-        Product product1 = product.get();
-        product1.update(dataUpdateProduct);
-        productRepository.save(product1);
-        return ResponseEntity.ok(new DataStock(product1));
+        product.update(dataUpdateProduct);
+        productRepository.save(product);
+        return ResponseEntity.ok(new DataStock(product));
     }
 
     @PutMapping("/quantity/{id}")
     @Transactional
     public ResponseEntity<DataStock> updateQuantityProduct(@RequestBody DataUpdateQuantity dataUpdateQuantity, @PathVariable Long id) {
-        Optional<Product> product = getProduct(id);
+        Product product = validator.valid(id);
 
-        Product product1 = product.get();
-        product1.updateQuantity(dataUpdateQuantity);
-        productRepository.save(product1);
-        return ResponseEntity.ok(new DataStock(product1));
+        product.updateQuantity(dataUpdateQuantity);
+        productRepository.save(product);
+        return ResponseEntity.ok(new DataStock(product));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteProduct(@PathVariable Long id) {
-        Optional<Product> optionalProduct = getProduct(id);
+        Product product = validator.valid(id);
 
-        Product product = optionalProduct.get();
         productRepository.delete(product);
         return ResponseEntity.noContent().build();
     }
 
-    // Verify if the product exist
-    private Optional<Product> getProduct(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()) {
-            throw new StockException("The id doesn't exist. Please, try it with another id.");
-        }
-        return product;
-    }
 }

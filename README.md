@@ -1,2 +1,3 @@
-# stock_management_api
-An RESTful API made in Java, for product management.
+### Stock Management API
+An RESTful API made in Java, for stock management.
+

@@ -47,7 +47,7 @@ public class StockController {
         productRepository.save(product);
 
         // Creating transaction
-        createTransaction.create(TransactionType.REGISTER_PRODUCT);
+        createTransaction.create(productDto.username(), TransactionType.REGISTER_PRODUCT);
 
         URI uri = uriComponentsBuilder.path("/stock/{id}").buildAndExpand(product.getId()).toUri();
         return ResponseEntity.created(uri).body(new DataStock(product));
@@ -60,7 +60,7 @@ public class StockController {
         product.update(dataUpdateProduct);
         productRepository.save(product);
 
-        createTransaction.create(TransactionType.UPDATE_PRODUCT);
+        createTransaction.create(dataUpdateProduct.username(), TransactionType.UPDATE_PRODUCT);
 
         return ResponseEntity.ok(new DataStock(product));
     }
@@ -72,17 +72,17 @@ public class StockController {
         product.updateQuantity(dataUpdateQuantity);
         productRepository.save(product);
 
-        createTransaction.create(TransactionType.UPDATE_QUANTITY_PRODUCT);
+        createTransaction.create(dataUpdateQuantity.username(), TransactionType.UPDATE_QUANTITY_PRODUCT);
 
         return ResponseEntity.ok(new DataStock(product));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteProduct(@PathVariable Long id) {
+    @DeleteMapping("/{username}/{id}")
+    public ResponseEntity deleteProduct(@PathVariable Long id, @PathVariable String username) {
         Product product = validator.valid(id);
         productRepository.delete(product);
 
-        createTransaction.create(TransactionType.DELETE_PRODUCT);
+        createTransaction.create(username, TransactionType.DELETE_PRODUCT);
 
         return ResponseEntity.noContent().build();
     }

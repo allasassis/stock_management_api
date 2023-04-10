@@ -8,5 +8,5 @@ import stock.management.api_stock.models.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    UserDetails findByUsername(String username);
+    User findByUsername(String username);
 }

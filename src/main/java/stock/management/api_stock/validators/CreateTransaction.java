@@ -1,4 +1,4 @@
-package stock.management.api_stock.controllers;
+package stock.management.api_stock.validators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

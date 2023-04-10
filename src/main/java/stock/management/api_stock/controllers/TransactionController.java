@@ -1,5 +1,6 @@
 package stock.management.api_stock.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transaction")
+@SecurityRequirement(name = "bearer-key")
 public class TransactionController {
 
     @Autowired

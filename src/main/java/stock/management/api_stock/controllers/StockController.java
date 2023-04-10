@@ -1,5 +1,6 @@
 package stock.management.api_stock.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +11,15 @@ import stock.management.api_stock.exception.StockException;
 import stock.management.api_stock.models.Product;
 import stock.management.api_stock.models.TransactionType;
 import stock.management.api_stock.repositories.ProductRepository;
+import stock.management.api_stock.validators.CreateTransaction;
 import stock.management.api_stock.validators.ValidatorProductExist;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/stock")
+@SecurityRequirement(name = "bearer-key")
 public class StockController {
 
     @Autowired
